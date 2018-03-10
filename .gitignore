@@ -1,3 +1,9 @@
+# certification
+*.key
+*.csr
+*.crt
+
+
 ### https://raw.github.com/github/gitignore/f51d32528bcd110bc8fb8b09e2b0164f6c243663/go.gitignore
 
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
