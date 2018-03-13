@@ -11,7 +11,7 @@ import (
 func handlerUpgrade(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Connection") != "Upgrade" || r.Header.Get("Upgrade") != "MyProtocol" {
 		w.WriteHeader(400)
-		fmt.Fprintf(w, "Upgradeしか受け付けないんだよー")
+		fmt.Fprintf(w, "Upgradeしか受け付けないんだよー！")
 		return
 	}
 
