@@ -1,3 +1,4 @@
+// 2nd
 package main
 
 import (
@@ -11,9 +12,9 @@ import (
 )
 
 func main() {
-	// TCPソケットオープン
+	// open TCP socket
 	dialer := &net.Dialer{
-		Timeout: 30 * time.Second,
+		Timeout:   30 * time.Second,
 		KeepAlive: 30 * time.Second,
 	}
 	conn, err := dialer.Dial("tcp", "localhost:18888")
@@ -22,16 +23,15 @@ func main() {
 	}
 	defer conn.Close()
 
-	// リクエスト送信
+	// send request
 	request, err := http.NewRequest("GET", "http://localhost:18888/chunked", nil)
 	err = request.Write(conn)
 	if err != nil {
 		panic(err)
 	}
-
-	// 読み込み
+	// reading
 	reader := bufio.NewReader(conn)
-	// ヘッダを読む
+	// reading header
 	resp, err := http.ReadResponse(reader, request)
 	if err != nil {
 		panic(err)
@@ -41,22 +41,20 @@ func main() {
 	}
 
 	for {
-		// サイズを取得
+		// get size
 		sizeStr, err := reader.ReadBytes('\n')
 		if err == io.EOF {
 			break
 		}
-
-		// 16進数のサイズをパース、サイズがゼロならクローズ
-		size, err := strconv.ParseInt(string(sizeStr[:len(sizeStr) - 2]), 16, 64)
+		// parse size of hex. if size is 0, it close
+		size, err := strconv.ParseInt(string(sizeStr[:len(sizeStr)-2]), 16, 64)
 		if size == 0 {
 			break
 		}
 		if err != nil {
 			panic(err)
 		}
-
-		// サイズ数分バッファを確保して読み込み
+		// make buffer and read
 		line := make([]byte, int(size))
 		reader.Read(line)
 		reader.Discard(2)
