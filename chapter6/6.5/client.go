@@ -5,7 +5,7 @@ import (
 	"net/rpc/jsonrpc"
 )
 
-// 引数
+// arguments
 type Args struct {
 	A, B int
 }
@@ -21,5 +21,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("4 * 5 = %d\n", result)
+	log.Printf("4 x 5 = %d\n", result)
 }
