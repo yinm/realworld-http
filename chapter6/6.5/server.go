@@ -8,17 +8,17 @@ import (
 	"net/rpc/jsonrpc"
 )
 
-// メソッドが属す構造体
+// struct of belonged method
 type Calculator int
 
-// RPCで外部から呼ばれるメソッド
+// method of calling with RPC
 func (c *Calculator) Multiply(args Args, result *int) error {
 	log.Printf("Multiply called: %d, %d\n", args.A, args.B)
 	*result = args.A * args.B
 	return nil
 }
 
-// 外部から呼ばれる時の引数
+// arguments of calling externally
 type Args struct {
 	A, B int
 }
