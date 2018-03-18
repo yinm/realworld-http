@@ -8,9 +8,9 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 )
 
 var clientID = "4c1461f2bd41605ae723"
@@ -72,16 +72,36 @@ func main() {
 
 	client := oauth2.NewClient(oauth2.NoContext, conf.TokenSource(oauth2.NoContext, token))
 
-	// Get Email
-	resp, err := client.Get("https://api.github.com/user/emails")
+	// post Gist
+	gist := `{
+	  "description": "API example",
+	  "public": true,
+	  "files": {
+		"hello_from_rest_api.txt": {
+		  "content": "Hello World"
+		}
+	  }
+	}`
+
+	// posting
+	resp, err := client.Post("https://api.github.com/gists", "application/json", strings.NewReader(gist))
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println(resp.Status)
 	defer resp.Body.Close()
 
-	emails, err := ioutil.ReadAll(resp.Body)
+	// parse result
+	type GistResult struct {
+		Url string `json:"html_url"`
+	}
+	gistResult := &GistResult{}
+	err = json.NewDecoder(resp.Body).Decode(&gistResult)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(string(emails))
+	if gistResult.Url != "" {
+		// open with browser
+		open.Start(gistResult.Url)
+	}
 }
