@@ -8,9 +8,9 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
 )
 
 var clientID = "4c1461f2bd41605ae723"
@@ -35,7 +35,7 @@ func main() {
 		var server *http.Server
 		server = &http.Server{
 			Addr: ":18888",
-			Handler: http.HandlerFunc(func(w http.REsponseWriter, r *http.Request) {
+			Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set("Content-Type", "text/html")
 				io.WriteString(w, "<html><script>window.open('about:blank', '_self').close()</script></html>")
 				w.(http.Flusher).Flush()
@@ -71,4 +71,17 @@ func main() {
 	}
 
 	client := oauth2.NewClient(oauth2.NoContext, conf.TokenSource(oauth2.NoContext, token))
+
+	// Get Email
+	resp, err := client.Get("https://api.github.com/user/emails")
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	emails, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(emails))
 }

@@ -1,3 +1,6 @@
+# access_token for GitHub
+access_token.json
+
 # certification
 *.key
 *.csr
